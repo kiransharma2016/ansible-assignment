@@ -1,0 +1,10 @@
+---
+- name: Adding Multiple Users and Appending in Sudoers file
+  user: 
+     name: "{{ item }}"
+     groups: admins
+     append: yes
+  with_items:
+     - john
+     - emily
+

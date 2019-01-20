@@ -1,0 +1,22 @@
+galaxy_info:
+  author: Shashi Yebbare
+  description: Common Utilities and package installation for Linux
+  company: SKYDEVOPS Pvt. Ltd.
+  license: license (Apache License V2.0)
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: EL
+      versions:
+      - 7
+    - name: Debian
+      versions:
+      - all
+    - name: Ubuntu
+      versions:
+      - trusty
+      - xenial
+
+  galaxy_tags: []
+dependencies: []

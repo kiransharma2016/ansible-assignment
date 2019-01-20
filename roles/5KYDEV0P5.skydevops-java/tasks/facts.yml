@@ -1,0 +1,40 @@
+---
+# gathering Java facts
+- name: Check Java Version
+  shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g' |  awk '{split($0,a,"."); print a[2]}'
+  register: jmaxver
+  changed_when: false
+- name: Check Java Version
+  shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g' |  awk '{split($0,a,"."); print a[3]}' | awk '{split($0,b,"_"); print b[2]}'
+  register: jminver
+  changed_when: false
+
+
+- name: set internal vars for 1.8.0_172
+  set_fact:
+    java_download_url: "http://download.oracle.com/otn-pub/java/jdk/{{java_main_rel}}u{{java_min_rel}}-b11/{{jdk172_b11}}/jdk-{{java_main_rel}}u{{java_min_rel}}-linux-x64.tar.gz"
+  when: java_main_rel == 8 and java_min_rel == 172
+
+- name: set internal vars for 1.8.0_171
+  set_fact:
+    java_download_url: "http://download.oracle.com/otn-pub/java/jdk/{{ java_main_rel }}u{{ java_min_rel }}-b11/{{jdk171_b11}}/jdk-{{java_main_rel}}u{{java_min_rel}}-linux-x64.tar.gz"
+  when: java_main_rel == 8 and java_min_rel == 171
+
+
+- name: Check if File Exists
+  stat:
+    path: "{{java_data_dir}}/{{java_src_tar}}"
+  register: jdk_already_present
+
+
+- name: download Java Binaries
+  get_url:
+    headers: 'Cookie:gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie'
+    dest: "{{ java_data_dir }}/{{java_src_tar}}"
+    url: "{{ java_download_url }}"
+    validate_certs: yes
+  register: oracle_java_task_tar_download
+  until: oracle_java_task_tar_download is succeeded
+  retries: 10
+  delay: 5
+  when: jdk_already_present.stat.exists == False 

@@ -1,0 +1,20 @@
+galaxy_info:
+  author: Shashi yebbare
+  description: Installs and configures Oracle Java 1.8.x
+  company: SKYDEVOPS
+  license: license (GPLv2, CC-BY, etc)
+  min_ansible_version: 2.4
+  platforms:
+    - name: EL
+      versions:
+      - 7
+    - name: Debian
+      versions:
+      - all
+    - name: Ubuntu
+      versions:
+      - trusty
+      - xenial
+
+  galaxy_tags: []
+dependencies: []

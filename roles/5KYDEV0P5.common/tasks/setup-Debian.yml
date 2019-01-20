@@ -1,0 +1,5 @@
+---
+# Libraries and utilities for Debian
+- name: Libraries and utilities
+  apt: name={{ item }} state=present
+  with_items: "{{ apt_libraries_utilities }}"

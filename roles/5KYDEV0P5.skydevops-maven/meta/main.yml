@@ -1,0 +1,20 @@
+galaxy_info:
+  author: Shashi Yebbare
+  description: Install and configure Apache Mvaen 3.x.x
+  company: SKYDEVOPS
+  license: license (Apache License V2.0)
+  min_ansible_version: 2.4
+  platforms:
+    - name: EL
+      versions:
+      - 7
+    - name: Debian
+      versions:
+      - all
+    - name: Ubuntu
+      versions:
+      - trusty
+      - xenial
+
+  galaxy_tags: []
+dependencies: [5KYDEV0P5.common, 5KYDEV0P5.skydevops-java]

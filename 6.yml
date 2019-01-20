@@ -1,0 +1,6 @@
+- name: hostname was used instead of path.
+  replace:
+      path: /etc/hosts
+      regexp: '(\s+)old\.name\.com(\s+.*)?$'
+      replace: '\new.name.com\2'
+      backup: yes

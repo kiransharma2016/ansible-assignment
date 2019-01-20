@@ -1,0 +1,15 @@
+---
+# tasks file for common
+# Data and apps directories
+- name: Check DATA directory
+  file: path={{ data_dir }} state=directory mode=0775 setype=usr_t
+- name: Check APPS directory
+  file: path={{ apps_dir }} state=directory mode=0775 setype=usr_t
+
+  
+# Setup/install tasks.
+- include_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_tasks: setup-Debian.yml
+  when: ansible_os_family == 'Debian'

@@ -1,0 +1,44 @@
+---
+# Major Maven version
+- name: Check Maven version Major
+  shell: mvn -version 2>&1 | grep -i "apache maven" | awk '{print $3}' |  awk '{split($0,a,"."); print a[1]}'
+  register: mmaxver
+  changed_when: false
+# Minor Maven Version
+- name: Check Maven version Minor
+  shell: mvn -version 2>&1 | grep -i "apache maven" | awk '{print $3}' |  awk '{split($0,a,"."); print a[2]}'
+  register: mminver
+  changed_when: false
+# Patch version
+- name: Check Maven version Patch
+  shell: mvn -version 2>&1 | grep -i "apache maven" | awk '{print $3}' |  awk '{split($0,a,"."); print a[3]}'
+  register: mpatver
+  changed_when: false
+
+- name: Set internal vars for Maven 3.5.3
+  set_fact:
+    maven_download_url: "http://www-us.apache.org/dist/maven/maven-{{main_rel}}/{{maven_version}}/binaries/{{maven_src_tar}}"
+  when: maven_version == '3.5.3'
+
+- name: Set internal vars for archived maven releases
+  set_fact:
+    maven_download_url: "https://archive.apache.org/dist/maven/maven-{{main_rel}}/{{maven_version}}/binaries/{{maven_src_tar}}"
+  when: "maven_version|int <= '3.5.3'"
+
+- name: Check if archive already exists
+  stat:
+    path: "{{maven_data_dir}}/{{maven_src_tar}}"
+  register: maven_archive_present
+
+- name: Download Maven Binaries
+  get_url:
+    dest: "{{maven_data_dir}}"
+    url: "{{maven_download_url}}"
+  register: maven_zip_dld
+  until: maven_zip_dld is succeeded
+  retries: 5
+  delay: 5
+  when: maven_archive_present.stat.exists == false
+
+
+

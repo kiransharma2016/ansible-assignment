@@ -1,0 +1,45 @@
+# extract the java archive
+- name: Extract JDK to Install directory
+  become: true
+  unarchive: 
+    src: "{{java_data_dir}}/{{java_src_tar}}"
+    dest: "{{ java_install_dir }}"
+    remote_src: yes
+
+# global shared directory
+- name: java shared directory
+  file: path={{ java_shared_home }} state=directory
+
+# symlink the shared directory
+- name: symlink JDK Install directory
+  file: src={{ java_home }} path={{ java_shared_home }} state=link force=yes
+
+# Global variables
+- name: JAVA global environment variables
+  template: src=profile.sh.j2 dest={{ java_profile_sh }} mode="u=rwx,g=r,o=r" owner=root
+
+- name: Check if Source File Exists
+  stat:
+    path: "{{ java_profile_sh }}"
+  register: source_already_present
+
+- name: Check For alternatives
+  stat:
+    path: /usr/bin/java
+  register: java_already_present
+
+# Source the profile
+- name: Source JAVA profile
+  shell: . {{ java_profile_sh }}
+  when: source_already_present.stat.exists == False
+
+# install thriugh alternatives
+- name: setup alternatives
+  template: src=alternatives-Debian.j2 dest=~/alternatives.sh mode="u=rwx,g=r,o=r"
+  when: java_already_present.stat.exists == False
+- name: Apply java alternatives
+  shell: ~/alternatives.sh
+  when: java_already_present.stat.exists == False
+- name: delete alternatives script
+  file: path=~/alternatives.sh state=absent  
+  when: java_already_present.stat.exists == False

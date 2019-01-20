@@ -1,0 +1,43 @@
+---
+- name: Test ping on localhost
+
+  hosts: test
+  user: user
+  become: yes
+# connection: local
+
+  tasks:
+
+    - name: backup the /etc/sudoers file for safety
+      command: cp -r /etc/sudoers /etc/sudoers.backup
+
+    - name: Adding a group Admins for adding users later on 
+      group: 
+       name=admins 
+       state=present 
+   
+    - name: Adding Multiple Users in Admins group
+      user: 
+        name: "{{ item }}"
+        groups: admins
+        append: yes
+      with_items:
+        - john
+        - emily
+
+    - name: make sure we can sudo as admin group
+      lineinfile: dest=/etc/sudoers state=present regexp='^%admins' line='%admins ALL=(ALL) NOPASSWD:ALL'
+
+    - name: deleteing if the given  User(s) exist in servers
+      user: 
+        name: "{{ item }}"
+        state : absent
+      with_items:
+        - john
+
+    - name: Set up multiple authorized files
+      authorized_key:
+         user: emily 
+         state: present
+         key: "{{ lookup('file', '/home/user/ansible/id_rsa.pub') }}" 
+

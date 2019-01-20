@@ -1,0 +1,7 @@
+---
+- name: Set up multiple authorized files
+  authorized_key:
+     user: emily 
+     state: present
+     key: "{{ lookup('file', '/home/user/ansible/id_rsa.pub') }}" 
+

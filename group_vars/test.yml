@@ -1,0 +1,2 @@
+ansible_ssh_pass: temp1119 
+ansible_become_pass: temp1119

@@ -1,0 +1,6 @@
+update-alternatives --install /usr/bin/java java {{ java_shared_home }}/bin/java 100
+update-alternatives --install /usr/bin/javac javac {{ java_shared_home }}/bin/javac 100
+update-alternatives --install /usr/bin/jar jar {{ java_shared_home }}/bin/jar 100
+update-alternatives --set java {{ java_shared_home }}/bin/java
+update-alternatives --set jar {{ java_shared_home }}/bin/jar
+update-alternatives --set javac {{ java_shared_home }}/bin/javac

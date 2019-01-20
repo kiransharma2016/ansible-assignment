@@ -1,0 +1,27 @@
+---
+# vars file for common
+data_dir: /data
+apps_dir: /apps
+
+# Libraries and utilities
+apt_libraries_utilities:
+- ntp
+- lsof
+- wget
+- python-software-properties
+- zip
+- unzip
+- build-essential
+
+yum_libraries_utilities:
+- ntp
+- lsof
+- wget
+- policycoreutils-python
+- zip
+- unzip
+- vim
+- dkms
+- iptables-services
+- kernel-devel
+- kernel-tools

@@ -1,0 +1,25 @@
+---
+services: docker
+
+env:
+  - distro: centos7
+  - distro: ubuntu1604
+
+
+script:
+  # Configure test script so we can run extra tests after playbook is run.
+  - export container_id=$(date +%s)
+  - export cleanup=false
+
+  # Download test shim.
+  - wget -O ${PWD}/tests/sdrtest.sh https://gist.githubusercontent.com/sky-kshatriyan/37d564e20e98d84b627b26b452b92c65/raw
+  - chmod +x ${PWD}/tests/sdrtest.sh
+
+  # Run tests.
+  - ${PWD}/tests/sdrtest.sh
+
+  # Ensure data directory is installed.
+  - 'docker exec --tty ${container_id} env TERM=xterm which mvn'
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

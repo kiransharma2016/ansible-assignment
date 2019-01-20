@@ -1,0 +1,8 @@
+---
+- name: deleteing if the given  User(s) exist in servers
+  user: 
+    name: "{{ item }}"
+    state : absent
+  with_items:
+    - john
+

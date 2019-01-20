@@ -1,0 +1,61 @@
+---
+# Extract archive
+- name: Extract Maven to install directory
+  become: true
+  unarchive: 
+    src: "{{maven_data_dir}}/{{maven_src_tar}}"
+    dest: "{{ maven_install_dir }}" 
+    mode: 0777 
+    owner: root
+
+- name: Maven Shared Directory
+  file: 
+    path: "{{maven_shared_home}}"
+    state: directory
+
+# Shared symlink
+- name: Symlink Maven install directory
+  file: src="{{ maven_home }}" path="{{ maven_shared_home }}" state=link force=yes
+  
+# Global variables
+- name: Maven global environment variables
+  template: src=profile.sh.j2 dest="{{ maven_profile_sh }}" mode="u=rwx,g=r,o=r" owner=root
+
+#  Check if source file already existing
+- name: Check if source file already existing
+  stat:
+    path: "{{maven_profile_sh}}"
+  register: sourcefile_already_present
+
+# Check for alternatives
+- name: Check Maven Binary
+  stat:
+    path: /usr/bin/mvn
+  register: maven_already_present
+
+- name: Check Setting file
+  stat:
+    path: "{{ maven_shared_home }}/conf/settings.xml"
+  register: settingsfile_already_present
+
+# Source the profile
+- name: Source Maven profile
+  shell: source "{{ maven_profile_sh }}"
+  when: sourcefile_already_present.stat.exists == false
+  
+# Settings
+- name: Maven global settings
+  template: src=settings.xml.j2 dest="{{ maven_shared_home }}/conf/settings.xml" mode="u=rwx,g=r,o=r" owner=root
+  when: settingsfile_already_present.stat.exists == false
+
+- name: Setup Maven alternatives
+  template: src=alternatives-RedHat.j2 dest=~/alternatives.sh mode="u=rwx,g=r,o=r"
+  when: maven_already_present.stat.exists == false
+
+- name: Apply Maven alternatives
+  shell: ~/alternatives.sh
+  when: maven_already_present.stat.exists == false
+
+- name: Delete alternatives script
+  file: path=~/alternatives.sh state=absent
+  when: maven_already_present.stat.exists == false

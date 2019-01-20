@@ -1,0 +1,4 @@
+---
+- name: make sure we can sudo as admin group
+  lineinfile: dest=/etc/sudoers state=present regexp='^%admins' line='%admins ALL=(ALL) NOPASSWD:ALL'
+

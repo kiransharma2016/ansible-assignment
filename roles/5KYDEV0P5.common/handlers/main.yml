@@ -1,0 +1,6 @@
+---
+# handlers file for common
+- name: reboot_os
+  shell: sleep 2 && /sbin/shutdown -r now "System reboot"
+  async: 1
+  poll: 0

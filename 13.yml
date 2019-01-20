@@ -1,0 +1,6 @@
+- name: Comment out pipeline archive in fstab
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '(.*swap.*)'
+    #line: Removed lines.
+    state: absent

@@ -1,0 +1,12 @@
+---
+- name: Test ping on localhost
+
+  hosts: 127.0.0.1 
+# connection: local
+
+  tasks:
+
+
+  - name: comment in swap 
+    include: 14.yml
+

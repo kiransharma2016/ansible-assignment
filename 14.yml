@@ -1,0 +1,4 @@
+- name: Comment out pipeline archive in fstab
+  command: sed -i 's/^[^#]*swap/#&/' /etc/fstab 
+  args:
+    warn: False

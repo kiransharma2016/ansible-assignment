@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  vars_files:
+    - common_vars.yml
+
+  pre_tasks:
+    - name: Check DATA directory
+      file: path={{ data_dir }} state=directory mode=0775 setype=usr_t
+    - name: Check APPS directory
+      file: path={{ apps_dir }} state=directory mode=0775 setype=usr_t
+    - name: Update apt cache.
+      apt: update_cache=yes cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+      changed_when: False
+    # Setup/install tasks.
+    - include_tasks: setup-RedHat.yml
+      when: ansible_os_family == 'RedHat'
+    - include_tasks: setup-Debian.yml
+      when: ansible_os_family == 'Debian'
+  roles:
+    - role_under_test

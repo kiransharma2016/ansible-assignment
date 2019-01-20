@@ -1,0 +1,40 @@
+---
+# Extra Packages for Enterprise Linux (EPEL)
+- name: Extra Packages for Enterprise Linux (EPEL)
+  yum: name=epel-release state=latest
+
+# Libraries and utilities for RedHat
+- name: Libraries and utilities
+  yum: name={{ item }} state=present
+  with_items: "{{ yum_libraries_utilities }}"
+
+# IPTABLES
+- name: Start IPTABLES service
+  service: name=iptables enabled=yes state=started
+
+# SELinux
+- name: SELinux should be enforcing
+  selinux:
+    policy: targeted
+    state: enforcing
+  notify: reboot_os
+
+
+# Date, Time and TimeZone
+- name: Install NTP
+  package:
+    name: ntp
+    state: present
+- name: tzdata package
+  package:
+    name: tzdata
+    state: present
+  when: ansible_system == "Linux"
+- name: Set TimeZone
+  timezone:
+    name: Asia/Kolkata
+- name: NTP Daemon
+  service:
+    name: ntpd
+    state: started
+    enabled: yes
