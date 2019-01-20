@@ -1,5 +1,0 @@
-- name: swap - remove current swaps from fstab
-  lineinfile:
-    dest: /etc/fstab
-    regexp: '^//swap '
-    replace: '#//swap'
