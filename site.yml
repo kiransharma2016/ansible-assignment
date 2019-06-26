@@ -1,0 +1,46 @@
+---
+- name: Ansible Bootstrapping 
+
+  hosts: test
+  user: user
+  become: yes
+  vars:
+    myusers: ['john']
+
+  pre_tasks: 
+
+    - name: check the user emily's group admins is already in sudoers file 
+      include: check_sudo_already_exist.yml  
+
+    - name: check user exist in the server already  
+      include: check_user_exist.yml
+
+    - name: messaging for end of pre_tasks
+      debug:
+         msg: end of pre_tasks
+  tasks:
+    - name: add user 
+      include: adduser.yml
+
+    - name: remove user 
+      include: delusrs.yml
+
+    - name: setup authorised key file in remote server  
+      include: authorised-key.yml
+
+    - name: add emily's group to suoders file 
+      include: sudouser.yml
+    - name: finding logged in users 
+      include: loggedinusers.yml
+  post_tasks: 
+
+    - name: check the user emily's group admins  exists in  sudoers file 
+      include: check_sudo_already_exist.yml  
+
+    - name: check user exist in the server   
+      include: check_user_exist.yml
+
+    - name: messaging for end of post_tasks
+      debug:
+         msg: end of post_tasks
+
